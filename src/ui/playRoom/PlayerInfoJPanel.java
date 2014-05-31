@@ -14,10 +14,10 @@ import data.player.Player;
 
 public class PlayerInfoJPanel extends JPanel {
 
-	private JLabel playerAScore, playerBScore, playerAPhoto, playerBPhoto, forWhoToPlay, playerAName, playerBName;
+	private JLabel playerAScore, playerBScore, playerAPhoto, playerBPhoto, playerAName, playerBName;
+	private JLabel playerAWin, playerBWin, playerALose, playerBLose;
 	private ImageIcon defaultPlayerAPhoto, defaultPlayerBPhoto;
 	private Player playerA, playerB;
-	private Thread updateScore;
 	private GameClient server;
 	private String userToken;
 
@@ -35,15 +35,17 @@ public class PlayerInfoJPanel extends JPanel {
 		initBound();
 		initLocation();
 		setComponentFont();
-		updateScore();
 	}
 
 	// init Component //
 	
 	private void setComponentFont() {
+		playerAWin.setFont(new Font(Font.DIALOG, Font.BOLD, getHeight()*7/40));
+		playerBWin.setFont(new Font(Font.DIALOG, Font.BOLD, getHeight()*7/40));
+		playerALose.setFont(new Font(Font.DIALOG, Font.BOLD, getHeight()*7/40));
+		playerBLose.setFont(new Font(Font.DIALOG, Font.BOLD, getHeight()*7/40));
 		playerAScore.setFont(new Font(Font.DIALOG, Font.BOLD, getHeight()*7/40));
 		playerBScore.setFont(new Font(Font.DIALOG, Font.BOLD, getHeight()*7/40));
-		forWhoToPlay.setFont(new Font(Font.DIALOG, Font.BOLD, getHeight()*7/40));
 		playerAName.setFont(new Font(Font.DIALOG, Font.BOLD, getHeight()*7/40));
 		playerBName.setFont(new Font(Font.DIALOG, Font.BOLD, getHeight()*7/40));
 	}
@@ -59,12 +61,36 @@ public class PlayerInfoJPanel extends JPanel {
 	}
 	
 	private void initJLabel() {
-		playerAScore = new JLabel(playerA.getScore() + "分");
-		playerAScore.setForeground(Color.red);
+		playerAWin = new JLabel("勝積：" + 0);
+		playerAWin.setBackground(Color.white);
+		playerAWin.setOpaque(true);
+		add(playerAWin);
+		
+		playerBWin = new JLabel("勝積：" + 0);
+		playerBWin.setBackground(Color.white);
+		playerBWin.setOpaque(true);
+		add(playerBWin);
+		
+		playerALose = new JLabel("敗積：" + 0);
+		playerALose.setBackground(Color.white);
+		playerALose.setOpaque(true);
+		add(playerALose);
+		
+		playerBLose = new JLabel("敗積：" + 0);
+		playerBLose.setBackground(Color.white);
+		playerBLose.setOpaque(true);
+		add(playerBLose);
+		
+		playerAScore = new JLabel("分數：" + playerA.getScore() + "分");
+//		playerAScore.setForeground(Color.white);
+		playerAScore.setBackground(Color.white);
+		playerAScore.setOpaque(true);
 		add(playerAScore);
 
-		playerBScore = new JLabel(playerB.getScore() + "分", JLabel.RIGHT);
-		playerBScore.setForeground(Color.red);
+		playerBScore = new JLabel("分數：" + playerB.getScore() + "分");
+//		playerBScore.setForeground(Color.white);
+		playerBScore.setBackground(Color.white);
+		playerBScore.setOpaque(true);
 		add(playerBScore);
 
 		playerAPhoto = new JLabel();
@@ -78,28 +104,35 @@ public class PlayerInfoJPanel extends JPanel {
 		playerB.getPhoto().setImage(playerB.getPhoto().getImage().getScaledInstance(playerBPhoto.getWidth(), playerBPhoto.getHeight(), Image.SCALE_DEFAULT));
 		playerBPhoto.setIcon(playerB.getPhoto());
 		add(playerBPhoto);
-
-		forWhoToPlay = new JLabel("輪到你了");
-		forWhoToPlay.setForeground(Color.red);
-		add(forWhoToPlay);
-
-		playerAName = new JLabel(playerA.getName());
-		playerAName.setBackground(Color.red);
+		
+		playerAName = new JLabel("玩家：" + playerA.getName());
+		playerAName.setBackground(Color.white);
 		playerAName.setOpaque(true);
 		add(playerAName);
 
-		playerBName = new JLabel(playerB.getName(), JLabel.RIGHT);
-		playerBName.setBackground(Color.red);
+		playerBName = new JLabel("玩家：" + playerB.getName());
+		playerBName.setBackground(Color.white);
 		playerBName.setOpaque(true);
 		add(playerBName);
 	}
 		 
-	private void initBound() { 
-		playerAScore.setBounds(getWidth() / 2 - getWidth() * 9 / 45, getHeight() * 2 / 5, getWidth() / 10, getHeight() / 4);
-		playerBScore.setBounds(getWidth() / 2 + getWidth() / 10, getHeight() * 2 / 5, getWidth() / 10, getHeight() / 4);
-		forWhoToPlay.setBounds(getWidth() / 2 - getWidth() / 13, 0, getWidth() / 4, getHeight() / 4);
-		playerAName.setBounds((getWidth() - 20) / 4 , getHeight() - getHeight() / 4, getWidth() / 5, getHeight() / 4);
-		playerBName.setBounds(getWidth() - (getWidth() - 20) / 4 - getWidth() / 5, getHeight() - getHeight() / 4, getWidth() / 5, getHeight() / 4);
+	private void initBound() {
+		playerAWin.setBounds((getWidth() / 2) - (getWidth() / 4),			
+				0, (getWidth() - 20) / 4, (getWidth() - 20) / 18);
+		playerBWin.setBounds(getWidth() - (getWidth() - 20) / 4 - getWidth() / 4,	
+				0, (getWidth() - 20) / 4, (getWidth() - 20) / 18);
+		playerALose.setBounds((getWidth() / 2) - (getWidth() / 4),
+				(getWidth() - 20) / 18, (getWidth() - 20) / 4, (getWidth() - 20) / 18);
+		playerBLose.setBounds(getWidth() - (getWidth() - 20) / 4 - getWidth() / 4, 
+				(getWidth() - 20) / 18, (getWidth() - 20) / 4, (getWidth() - 20) / 18);
+		playerAScore.setBounds((getWidth() / 2) - (getWidth() / 4), 
+				(getWidth() - 20) / 9, (getWidth() - 20) / 4, (getWidth() - 20) / 18);
+		playerBScore.setBounds(getWidth() - (getWidth() - 20) / 4 - getWidth() / 4, 
+				(getWidth() - 20) / 9, (getWidth() - 20) / 4, (getWidth() - 20) / 18);
+		playerAName.setBounds((getWidth() / 2) - (getWidth() / 4), 
+				getHeight() - getHeight() / 4, (getWidth() - 20) / 4, (getWidth() - 20) / 18);
+		playerBName.setBounds(getWidth() - (getWidth() - 20) / 4 - getWidth() / 4, 
+				getHeight() - getHeight() / 4, (getWidth() - 20) / 4, (getWidth() - 20) / 18);
 	}
 
 	private void initLocation() {
@@ -110,26 +143,39 @@ public class PlayerInfoJPanel extends JPanel {
 	// init Component end //
 	
 	// API//
+	public void setPlayerAWin(int win) {
+		this.playerAWin.setText("勝積：" + win);
+	}
+	
+	public void setPlayerBWin(int win) {
+		this.playerBWin.setText("勝積：" + win);
+	}
+	
+	public void setPlayerALose(int lose) {
+		this.playerALose.setText("勝積：" + lose);
+	}
+	
+	public void setPlayerBLose(int lose) {
+		this.playerBLose.setText("勝積：" + lose);
+	}
 	
 	public void setplayerAName(String name) {
-		this.playerAName.setText(name);
+		this.playerAName.setText("玩家：" + name);
 	}
 	
 	public void setplayerBName(String name) {
-		this.playerBName.setText(name);
+		this.playerBName.setText("玩家：" + name);
 	}
 	
 	public void setPlayerAScore(String score) {
-		this.playerAScore.setText(score);
+		this.playerAScore.setText("分數：" + score + "分");
 	}
 	
 	public void setPlayerBScore(String score) {
-		this.playerBScore.setText(score);
+		this.playerBScore.setText("分數：" + score + "分");
 	}
 	
-	public void changePlay(String turnWho) {
-		forWhoToPlay.setText(turnWho);
-	}
+	
 	
 	public void setPlayerAPhoto(ImageIcon photo) {
 		photo.setImage(photo.getImage().getScaledInstance(playerAPhoto.getWidth(), playerAPhoto.getHeight(), Image.SCALE_DEFAULT));
@@ -142,50 +188,7 @@ public class PlayerInfoJPanel extends JPanel {
 	
 	// API end //
 	
-	private int getScore(String userToken) {
-		int score;
-		score = -1;
-		try {
-			System.out.println(userToken);
-			score = server.s.getScore(server.getRoom(), userToken);
-			return score;
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return score;
-	}
 	
-	private void updateScore() {
-		updateScore = new Thread(new Runnable() {
-//		boolean turnAnother = true;
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				try {
-					while (true) {
-						Thread.sleep(1000 * 1);
-						// update score start
-						setPlayerAScore(getScore(userToken) + "分");
-						setPlayerBScore(getScore(server.getRivalToken(userToken)) + "分");
-						// update score end
-						if (server.s.isTurnUser(server.getRoom(), userToken)) {
-							changePlay("輪到你了");
-						} else {
-							changePlay("等待對方");
-						}
-					}
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
-		updateScore.start();
-	}
 	
 //	public static void main(String[] args) {
 //		// TODO Auto-generated method stub

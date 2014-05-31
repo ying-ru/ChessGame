@@ -192,4 +192,20 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 		// TODO Auto-generated method stub
 		return roomlist.get(getRoomIndex(roomNum)).isWin(userToken);
 	}
+
+	@Override
+	public int getWin(String userToken) throws RemoteException {
+		// TODO Auto-generated method stub
+		dataBase.selectUser(userToken);
+		dataBase.selectWin(userToken);
+		return 0;
+	}
+
+	@Override
+	public int getLose(String userToken) throws RemoteException {
+		// TODO Auto-generated method stub
+		dataBase.selectUser(userToken);
+		dataBase.selectLose(userToken);
+		return 0;
+	}
 }

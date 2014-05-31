@@ -19,6 +19,7 @@ public class Room
 	private DataBase dataBase;
 	private Rule temp;
 	private boolean first = true;
+	private boolean isEnd = false;
 	
 	public Room(int roomNum,String player0UserToken,String player1UserToken, DataBase dataBase) 
 	{
@@ -77,11 +78,14 @@ public class Room
 	
 	//判斷輸贏結果
 	public boolean isWin(String userToken) {
-		if (getScore(userToken) == 16) {
+		if (getScore(userToken) == 16 && !isEnd) {
 			int win = dataBase.selectWin(userToken);
 			int lose = dataBase.selectLose(userToken);
 			win++;
+			isEnd = true;
 			dataBase.update(userToken, win, lose);
+			chatMsg.add("<系統> ： " + userToken + "獲勝");
+			chatMsg.add("<系統> ： " + userToken + "獲勝");
 			return true;
 		} else {
 			return false;
@@ -171,4 +175,6 @@ public class Room
 		boolean hasNewMsg = !(chatMsg.isEmpty());
 		return hasNewMsg;
 	}
+	
+	
 }

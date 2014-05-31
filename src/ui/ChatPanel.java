@@ -70,7 +70,7 @@ public class ChatPanel extends JPanel {
 //					chatTextArea.setCaretPosition(chatTextArea.getText().length());
 					//call server chat start
 					try {
-						server.s.chat(server.getRoom(), userToken, userToken + " >" + chatInputArea.getText().replace("\n", "") + "\n");
+						server.s.chat(server.getRoom(), userToken, "<" + userToken + ">" + " ： " + chatInputArea.getText().replace("\n", "") + "\n");
 					} catch (RemoteException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -119,6 +119,7 @@ public class ChatPanel extends JPanel {
 					while (true) {
 						Thread.sleep(100);
 						// update chat start
+						
 						if (server.s.hasNewMsg(server.getRoom())) {
 							appendChatArea(server.s.updateChat(server.getRoom()));
 						}

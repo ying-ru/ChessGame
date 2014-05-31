@@ -84,6 +84,7 @@ public class Rule {
 										chessBoard[toY][toX] = chessBoard[y][x];
 										chessBoard[y][x] = null;
 										if (chessBoard[toY][toX].getColor() == 0) { // 0 = red
+											player0++;
 										} else { // black
 											player1++;
 										}

@@ -45,6 +45,18 @@ public class GameClient {
 		this.room = room;
 	}
 	
+	public String getRivalToken(String userToken) {
+		String token;
+		token = "";
+		try {
+			token = s.getRivalToken(getRoom(), userToken);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return token;
+	}
+	
 //	public boolean moveChess(){
 //		action = false;
 //		try{

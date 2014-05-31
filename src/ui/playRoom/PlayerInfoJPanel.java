@@ -124,7 +124,7 @@ public class PlayerInfoJPanel extends JPanel {
 	}
 	
 	public void setPlayerBScore(String score) {
-		this.playerAScore.setText(score);
+		this.playerBScore.setText(score);
 	}
 	
 	public void changePlay(String turnWho) {
@@ -142,10 +142,11 @@ public class PlayerInfoJPanel extends JPanel {
 	
 	// API end //
 	
-	private int getScore() {
+	private int getScore(String userToken) {
 		int score;
 		score = -1;
 		try {
+			System.out.println(userToken);
 			score = server.s.getScore(server.getRoom(), userToken);
 			return score;
 		} catch (RemoteException e) {
@@ -165,8 +166,8 @@ public class PlayerInfoJPanel extends JPanel {
 					while (true) {
 						Thread.sleep(1000 * 1);
 						// update score start
-						setPlayerAScore(getScore() + "分");
-						setPlayerBScore(getScore() + "分");
+						setPlayerAScore(getScore(userToken) + "分");
+						setPlayerBScore(getScore(server.getRivalToken(userToken)) + "分");
 						// update score end
 						if (server.s.isTurnUser(server.getRoom(), userToken)) {
 							changePlay("輪到你了");

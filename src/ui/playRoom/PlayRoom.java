@@ -51,12 +51,7 @@ public class PlayRoom extends MainFrame {
 		setPlayerAInfoName(userToken);
 
 		setPlayerBPhoto(new ImageIcon("C:/sqa/wallpaper/Jellyfish.jpg"));
-		try {
-			setPlayerBInfoName(server.s.getRivalToken(server.getRoom(), userToken));
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		setPlayerBInfoName(server.getRivalToken(userToken));
 	}
 	
 	// init Component //

@@ -197,7 +197,7 @@ public class PlayRoom extends MainFrame {
 //					updateScore.suspend();
 //					updateChessBoard.suspend();
 					appendChatArea("<系統> ： 連線中斷，請重新開啟遊戲。");
-					appendChatArea("<系統> ： 若仍然無法連線，則強制斷線，並判為輸局。");
+					appendChatArea("<系統> ： 若 60 秒仍然無法連線，則強制斷線，並判為輸局。");
 //					int room = -1;
 //					while (room == -1) {
 //						try {

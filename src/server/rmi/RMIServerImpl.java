@@ -217,5 +217,12 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 		 */
 		
 		roomlist.get(getRoomIndex(roomNum)).exit(userToken);
+		for (int i = 0; i < online.size(); i++) {
+			if (online.get(i).getUserToken().equals(userToken)) {
+				online.remove(i);
+			}
+		}
 	}
+	
+	
 }

@@ -21,11 +21,12 @@ public class PlayingRemindMessage {
 
 //		tooNightToPlay();
 		playTooLongTime();
+		tooNightToPlay();
 	}
 
 	private void playTooLongTime() {
 		playTooLong = new Thread(new Runnable() {
-
+//			int count = 0;
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
@@ -34,10 +35,11 @@ public class PlayingRemindMessage {
 					Date d = new Date();
 					while (true) {
 						d = new Date();
-						System.out.println(d.getHours()+" : "+d.getMinutes()+" : "+d.getSeconds());
-						Thread.sleep(1000 * 5);
+						System.out.println("stop: " + d.getHours()+" : "+d.getMinutes()+" : "+d.getSeconds());
+						Thread.sleep(1000 * 1);
 //						System.out.println(tmp + "秒過了");
 //						tmp += 60;
+						
 					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -49,19 +51,49 @@ public class PlayingRemindMessage {
 	}
 
 	private void tooNightToPlay() {
+//		tooNight = new Thread(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				// TODO Auto-generated method stub
+//
+//			}
+//		});
 		tooNight = new Thread(new Runnable() {
-
+			int count = 0;
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-
+				try {
+//					int tmp = 60;
+					Date d = new Date();
+					while (true) {
+						d = new Date();
+						System.out.println("test1: " + d.getHours()+" : "+d.getMinutes()+" : "+d.getSeconds());
+						Thread.sleep(1000 * 1);
+//						System.out.println(tmp + "秒過了");
+//						tmp += 60;
+						if (count == 5) {
+							playTooLong.suspend();
+						}
+						if (count == 10) {
+							playTooLong.resume();
+						}
+						count++;
+					}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
+		tooNight.start();
 	}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		PlayingRemindMessage t = new PlayingRemindMessage();
+		
 	}
 
 }

@@ -179,6 +179,20 @@ public class Room
 	public void exit(String userToken)
 			throws RemoteException {
 		// TODO Auto-generated method stub
-		chatMsg.add("<系統> ： " + userToken + "獲勝");
+		chatMsg.add("<系統> ： " + userToken + "離開");
+		//判斷獲勝
+		if (userToken.equals(player0UserToken)) {
+			userToken = player1UserToken;
+		} else {
+			userToken = player0UserToken;
+		}
+		if (!isEnd) {
+			int win = dataBase.selectWin(userToken);
+			int lose = dataBase.selectLose(userToken);
+			win++;
+			isEnd = true;
+			dataBase.update(userToken, win, lose);
+			chatMsg.add("<系統> ： " + userToken + "獲勝");
+		}
 	}
 }

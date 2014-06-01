@@ -85,6 +85,12 @@ public class PlayRoom extends MainFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				try {
+					server.s.exit(server.getRoom(), userToken);
+				} catch (RemoteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				System.exit(0);
 			}
 		});
@@ -179,6 +185,25 @@ public class PlayRoom extends MainFrame {
 					e.printStackTrace();
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
+					updateScore.suspend();
+					
+					int room = server.getRoom();
+					while (room == -1) {
+						try {
+							Thread.sleep(1000 * 5);
+						} catch (InterruptedException e2) {
+							// TODO Auto-generated catch block
+							e2.printStackTrace();
+						}
+						try {
+							server.s.connect(userToken);
+						} catch (RemoteException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						room = server.getRoom();
+						System.out.println("room" + room);
+					}
 					e.printStackTrace();
 				}
 			}

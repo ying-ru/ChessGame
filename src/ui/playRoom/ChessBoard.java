@@ -77,7 +77,7 @@ public class ChessBoard extends ChessBoardPanel implements MouseMotionListener, 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-
+		
 	}
 	
 	@Override

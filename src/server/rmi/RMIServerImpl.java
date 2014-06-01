@@ -74,6 +74,7 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 			online.add(rival);
 			count = (count + 1) % 2;
 			waitingPlayer.remove(rivalToken);
+			
 			roomNum++;
 			return roomNum-1;
 		}
@@ -222,8 +223,6 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 				online.remove(i);
 			}
 		}
-		roomlist.remove(getRoomIndex(roomNum));
+//		dataBase.delete(userToken);
 	}
-	
-	
 }

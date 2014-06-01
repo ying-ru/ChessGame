@@ -9,9 +9,11 @@ import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+
 import rmi.GameClient;
 import ui.ChatPanel;
 import ui.MainFrame;
@@ -26,6 +28,7 @@ public class PlayRoom extends MainFrame {
 	private GameClient server;
 	private String userToken;
 	private Thread playTooLong;
+	private Thread updateScore;
 	private boolean isRemind = false;
 //	private Observable obs;
 
@@ -45,7 +48,7 @@ public class PlayRoom extends MainFrame {
 		revalidate();
 		repaint();
 		testDrive();
-		
+		updateScore();
 		time();
 	}
 	
@@ -54,11 +57,15 @@ public class PlayRoom extends MainFrame {
 
 //		setPlayerAPhoto(new ImageIcon("C:/sqa/wallpaper/Desert.jpg"));
 		setPlayerAInfoName(userToken);
+//		setPlayerAInfoWin(server.getWin(userToken));
+//		setPlayerAInfoLose(server.getWin(userToken));
 		setPlayerAInfoWin(1);
 		setPlayerAInfoLose(2);
 		
 //		setPlayerBPhoto(new ImageIcon("C:/sqa/wallpaper/Jellyfish.jpg"));
 		setPlayerBInfoName(server.getRivalToken(userToken));
+//		setPlayerBInfoWin(server.getWin(server.getRivalToken(userToken)));
+//		setPlayerBInfoLose(server.getLose(server.getRivalToken(userToken)));
 		setPlayerBInfoWin(3);
 		setPlayerBInfoLose(4);
 	}
@@ -82,7 +89,9 @@ public class PlayRoom extends MainFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					server.s.exit(server.getRoom(), userToken);
+					if (server.getRoom() != -1) {
+						server.s.exit(server.getRoom(), userToken);
+					}
 				} catch (RemoteException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -137,7 +146,7 @@ public class PlayRoom extends MainFrame {
 		int score;
 		score = -1;
 		try {
-			System.out.println(userToken);
+//			System.out.println(userToken);
 			score = server.s.getScore(server.getRoom(), userToken);
 			return score;
 		} catch (RemoteException e) {
@@ -147,7 +156,75 @@ public class PlayRoom extends MainFrame {
 		return score;
 	}
 	
-	
+	private void updateScore() {
+		updateScore = new Thread(new Runnable() {
+//		boolean turnAnother = true;
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					boolean remind1 = true;
+					boolean remind2 = true;
+					while (true) {
+						Thread.sleep(1000 * 1);
+						// update score start
+						if (!server.s.isWin(server.getRoom(), userToken)) {
+							int scoreA = getScore(userToken);
+							int scoreB = getScore(server.getRivalToken(userToken));
+							getPlayerInfoJPanel().setPlayerAScore(scoreA + "");
+							getPlayerInfoJPanel().setPlayerBScore(scoreB + "");
+							if (scoreB - scoreA > 7 && remind1) {
+								appendChatArea("<系統> ： " + userToken + "！該加油囉！");
+								remind1 = false;
+							}
+							if (scoreA > 11 && remind2) {
+								appendChatArea("<系統> ： " + userToken + "！加油，快贏對方了！");
+								remind2 = false;
+							}
+						}
+						// update score end
+						if (server.s.isTurnUser(server.getRoom(), userToken)) {
+							changePlay("輪到你了");
+						} else {
+							changePlay("等待對方");
+						}
+					}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+//					updateScore.suspend();
+//					updateChessBoard.suspend();
+					appendChatArea("<系統> ： 連線中斷，請重新開啟遊戲。");
+					appendChatArea("<系統> ： 若仍然無法連線，則強制斷線，並判為輸局。");
+//					int room = -1;
+//					while (room == -1) {
+//						try {
+//							Thread.sleep(1000 * 60);
+//						} catch (InterruptedException e2) {
+//							// TODO Auto-generated catch block
+//							e2.printStackTrace();
+//						}
+//						try {
+//							server.s.connect(userToken);
+//							appendChatArea("<系統> ： 重新連線成功。");
+//							updateScore.resume();
+////							updateChessBoard.resume();
+//						} catch (RemoteException e1) {
+//							// TODO Auto-generated catch block
+//							appendChatArea("<系統> ： 重新連線失敗。");
+//							e1.printStackTrace();
+//						}
+//						room = server.getRoom();
+//						System.out.println("room" + room);
+//					}
+					e.printStackTrace();
+				}
+			}
+		});
+		updateScore.start();
+	}
 	
 	private void time() {
 		playTooLong = new Thread(new Runnable() {
@@ -157,11 +234,18 @@ public class PlayRoom extends MainFrame {
 				try {
 					String formet = new SimpleDateFormat("a", Locale.US).format(new Date());
 					Date d = new Date();
+					int hour = 12;
 					while (true) {
 						d = new Date();
-						
-						System.out.println(d.getHours()+" : "+d.getMinutes()+" : "+d.getSeconds() + " " + formet);
+						if (d.getHours() != hour) {
+							hour = d.getHours();
+							isRemind = false;
+						}
+//						System.out.println(d.getHours()+" : "+d.getMinutes()+" : "+d.getSeconds() + " " + formet);
 						if (!isRemind && ((d.getHours() > 10 && formet.equals("PM")) || (d.getHours() < 4 && formet.equals("AM")))) {
+							if (d.getHours() == 0) {
+								appendChatArea("<系統> ： " + 12 + "點了，很晚囉。");
+							}
 							appendChatArea("<系統> ： " + d.getHours() + "點了，很晚囉。");
 							isRemind = true;
 						}

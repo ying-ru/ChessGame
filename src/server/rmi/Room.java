@@ -11,8 +11,8 @@ public class Room
 {
 	private int roomNum;
 	private ChessBoard chessBoard;
-	private String player0UserToken;
-	private String player1UserToken;
+	private String player0UserToken = "";
+	private String player1UserToken = "";
 	private int nowPlay = 0;
 	private LinkedList<String> chatMsg = new LinkedList<String>();
 	private DataBase dataBase;
@@ -22,7 +22,7 @@ public class Room
 	private Thread playTooLong;
 	private String updatePlayer0, updatePlayer1;
 	
-	public Room(int roomNum,String player0UserToken,String player1UserToken, DataBase dataBase) 
+	public Room(int roomNum, String player0UserToken, String player1UserToken, DataBase dataBase) 
 	{
 		this.roomNum = roomNum;
 		this.temp = new Rule();
@@ -83,7 +83,11 @@ public class Room
 	//判斷輸贏結果
 	public boolean isWin(String userToken) {
 		String rivalToken;
-		setUpdatePlayer(userToken);
+		if (userToken.equals(player0UserToken)) {
+			updatePlayer0 = userToken;
+		} else {
+			updatePlayer1 = userToken;
+		}
 		if (userToken.equals(player0UserToken)) {
 			rivalToken = player1UserToken;
 		} else {
@@ -99,8 +103,8 @@ public class Room
 			lose = dataBase.selectLose(rivalToken);
 			lose++;
 			dataBase.update(rivalToken, win, lose);
-			chatMsg.add("<系統> ： " + userToken + "獲勝");
-			chatMsg.add("<系統> ： " + userToken + "獲勝");
+			chatMsg.add("<系統> ： " + userToken + " 獲勝");
+			chatMsg.add("<系統> ： " + userToken + " 獲勝");
 			return true;
 		} else {
 			return false;
@@ -169,7 +173,11 @@ public class Room
 	public boolean isTurnUser(String userToken)
 			throws RemoteException {
 		// TODO Auto-generated method stub
-		setUpdatePlayer(userToken);
+		if (userToken.equals(player0UserToken)) {
+			updatePlayer0 = userToken;
+		} else {
+			updatePlayer1 = userToken;
+		}
 		boolean turnUser = (nowPlay == 0 && userToken.equals(player0UserToken)) || (nowPlay == 1 && userToken.equals(player1UserToken));
 		return turnUser;
 	}
@@ -196,7 +204,8 @@ public class Room
 			throws RemoteException {
 		// TODO Auto-generated method stub
 		
-		chatMsg.add("<系統> ： " + userToken + "離開");
+		chatMsg.add("<系統> ： " + userToken + " 離開");
+		chatMsg.add("<系統> ： " + userToken + " 離開");
 		//判斷獲勝
 		String rivalToken;
 		if (userToken.equals(player0UserToken)) {
@@ -219,18 +228,10 @@ public class Room
 			lose = dataBase.selectLose(rivalToken);
 			lose++;
 			dataBase.update(rivalToken, win, lose);
-			chatMsg.add("<系統> ： " + userToken + "獲勝");
-			chatMsg.add("<系統> ： " + userToken + "獲勝");
+			chatMsg.add("<系統> ： " + userToken + " 獲勝");
+			chatMsg.add("<系統> ： " + userToken + " 獲勝");
 		}
 		
-	}
-	
-	private void setUpdatePlayer(String userToken) {
-		if (userToken.equals(player0UserToken)) {
-			updatePlayer0 = userToken;
-		} else {
-			updatePlayer1 = userToken;
-		}
 	}
 	
 	private void update() {
@@ -246,9 +247,10 @@ public class Room
 						if (updatePlayer0 == null && count0 < 130) {
 							count0++;
 						} else if (count0 >= 130) {
-							chatMsg.add("<系統> ： " + player0UserToken + "斷線。");
+							
 							if (!isEnd) {
 								isEnd = true;
+								chatMsg.add("<系統> ： " + player0UserToken + " 斷線");
 								int win = dataBase.selectWin(player1UserToken);
 								int lose = dataBase.selectLose(player1UserToken);
 								win++;
@@ -257,8 +259,7 @@ public class Room
 								lose = dataBase.selectLose(player0UserToken);
 								lose++;
 								dataBase.update(player0UserToken, win, lose);
-								chatMsg.add("<系統> ： " + player1UserToken + "獲勝");
-								chatMsg.add("<系統> ： " + player1UserToken + "獲勝");
+								chatMsg.add("<系統> ： " + player1UserToken + " 獲勝");
 							}
 						} else {
 							updatePlayer0 = null;
@@ -267,9 +268,10 @@ public class Room
 						if (updatePlayer1 == null && count1 < 130) {
 							count1++;
 						} else if (count1 >= 130) {
-							chatMsg.add("<系統> ： " + player1UserToken + "斷線。");
+							
 							if (!isEnd) {
 								isEnd = true;
+								chatMsg.add("<系統> ： " + player1UserToken + " 斷線");
 								int win = dataBase.selectWin(player0UserToken);
 								int lose = dataBase.selectLose(player0UserToken);
 								win++;
@@ -278,8 +280,7 @@ public class Room
 								lose = dataBase.selectLose(player1UserToken);
 								lose++;
 								dataBase.update(player1UserToken, win, lose);
-								chatMsg.add("<系統> ： " + player0UserToken + "獲勝");
-								chatMsg.add("<系統> ： " + player0UserToken + "獲勝");
+								chatMsg.add("<系統> ： " + player0UserToken + " 獲勝");
 							}
 						} else {
 							updatePlayer1 = null;

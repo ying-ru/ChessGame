@@ -1,20 +1,19 @@
 package rmi;
+
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-
 import server.rmi.ServerInterface;
-import data.chessPiece.ChessPieceList;
 
 public class GameClient {
 	public ServerInterface s;
-	private int beforeX, beforeY, afterX, afterY;
+//	private int beforeX, beforeY, afterX, afterY;
 	private int room;
-	private String chat;
-	private String userToken, userSecretToken, rivalToken, rivalSecretToken;
-	private ChessPieceList chessPieceList;
-	private boolean action = false;
+//	private String chat;
+//	private String userToken, userSecretToken, rivalToken, rivalSecretToken;
+//	private ChessPieceList chessPieceList;
+//	private boolean action = false;
 	
 	public GameClient() {
 		try {
@@ -55,6 +54,28 @@ public class GameClient {
 			e.printStackTrace();
 		}
 		return token;
+	}
+	
+	public int getWin(String userToken) {
+		int win = 0;
+		try {
+			win = s.getWin(userToken);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return win;
+	}
+	
+	public int getLose(String userToken) {
+		int lose = 0;
+		try {
+			lose = s.getLose(userToken);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return lose;
 	}
 	
 //	public boolean moveChess(){

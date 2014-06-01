@@ -5,13 +5,20 @@ import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
+
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
+
+import data.chessPiece.ChessPiece;
+import data.chessPiece.ChessPieceList;
 import rmi.GameClient;
 
-public class ChatPanel extends JPanel {
+public class ChatPanel extends JPanel implements Observer {
 	
 	private JTextArea chatInputArea, chatTextArea;
 	private JScrollPane chatScrollPanel;
@@ -135,5 +142,15 @@ public class ChatPanel extends JPanel {
 			}
 		});
 		updateChat.start();
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
+		if (o instanceof ChessPieceList) {
+			if (arg instanceof String) {
+				appendChatArea((String)arg);
+			}
+		}
 	}
 }

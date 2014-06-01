@@ -16,7 +16,6 @@ public class ChessPieceList extends Observable implements Observer {
 	private ChessPiece temp;
 	private ChessPieceLocation chessBoardLoc;
 	private ArrayList<ChessPiece> chessPieceList;
-	private Thread updateChessBoard;
 	private GameClient server;
 	private String userToken;
 
@@ -26,14 +25,14 @@ public class ChessPieceList extends Observable implements Observer {
 		this.chessBoardLoc = chessBoardLoc;
 		chessPieceList = new ArrayList<ChessPiece>();
 		initChessPiece();
-		updateChessBoard();
+		
 		// TODO Auto-generated constructor stub
 	}
 
 	public void initChessPiece() {
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 4; j++) {
-				temp = new ChessPiece(chessBoardLoc.getChessLocation(i, j), i, j, -1, chessBoardLoc.getGridLength(), "cover", chessBoardLoc);
+				temp = new ChessPiece(chessBoardLoc.getChessLocation(i, j), i, j, chessBoardLoc.getGridLength(), "cover", chessBoardLoc);
 				chessPieceList.add(temp);
 			}
 		}
@@ -48,7 +47,7 @@ public class ChessPieceList extends Observable implements Observer {
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 4; j++) {
 				if (!chessBoard[j][i].equals("NULL")) {
-					temp = new ChessPiece(chessBoardLoc.getChessLocation(i, j), i, j, -1, chessBoardLoc.getGridLength(), chessBoard[j][i], chessBoardLoc);
+					temp = new ChessPiece(chessBoardLoc.getChessLocation(i, j), i, j, chessBoardLoc.getGridLength(), chessBoard[j][i], chessBoardLoc);
 					chessPieceList.add(temp);
 				}
 			}
@@ -105,42 +104,5 @@ public class ChessPieceList extends Observable implements Observer {
 //		return chesses;
 //	}
 	
-	private void updateChessBoard() {
-		updateChessBoard = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				try {
-					boolean update;
-					update = true;
-					while (true) {
-						Thread.sleep(1000 * 1);
-						if (server.s.isTurnUser(server.getRoom(), userToken) && update) {
-							// update chess board start
-							System.out.println("update...");
-							String[][] chess = server.s.updateChessBoardInfo(server.getRoom(), userToken);
-							setChessPiece(chess);
-							update = false;
-							for (int i = 0; i < 4; i++) {
-								for (int j = 0; j < 8; j++) {
-									System.out.print(chess[i][j] + " ");
-								}
-								System.out.println();
-							}
-							// update chess board end
-						} else if (!server.s.isTurnUser(server.getRoom(), userToken)) {
-							update = true;
-						}
-					}
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
-		updateChessBoard.start();
-	}
+	
 }

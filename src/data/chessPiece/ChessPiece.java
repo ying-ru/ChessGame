@@ -4,16 +4,12 @@ import java.awt.Point;
 
 public class ChessPiece extends ChessPiecePicture {
 	private String chessName = "";
-	private int color;
-	private boolean dead = false;
-	private boolean cover = true;
 	private int chessCoorX, chessCoorY;
 	private ChessPieceLocation chessBoardLoc;
-	private ChessPiecePicture chessPiecePicture;
 	private int beforeX, beforeY, afterX, afterY;
 	private int grid;
 	
-	public ChessPiece(Point point, int chessCoorX, int chessCoorY,int color, int grid, String chessName, ChessPieceLocation chessBoardLoc) {
+	public ChessPiece(Point point, int chessCoorX, int chessCoorY, int grid, String chessName, ChessPieceLocation chessBoardLoc) {
 		// TODO Auto-generated constructor stub
 		super(point, grid, chessName);
 		this.grid = grid;
@@ -21,7 +17,6 @@ public class ChessPiece extends ChessPiecePicture {
 		this.chessName = chessName;
 		this.chessCoorX = chessCoorX;
 		this.chessCoorY = chessCoorY;
-		this.color = color;	//cover=-1, red=0, black=1
 		this.beforeX = chessCoorX;
 		this.beforeY = chessCoorY;
 	}

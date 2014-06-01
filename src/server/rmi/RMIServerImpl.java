@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
-
 import server.jdbc.DataBase;
 import server.data.player.Player;
 
@@ -208,12 +207,13 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 		dataBase.selectLose(userToken);
 		return 0;
 	}
-
+	
 	@Override
 	public void exit(int roomNum, String userToken) throws RemoteException {
 		// TODO Auto-generated method stub
 		/**
 		 * remove online(1 player exit), roomlist(2 player exit or game over) 
+		 * display who leave & who win
 		 */
 		
 		roomlist.get(getRoomIndex(roomNum)).exit(userToken);
@@ -222,6 +222,7 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 				online.remove(i);
 			}
 		}
+		roomlist.remove(getRoomIndex(roomNum));
 	}
 	
 	

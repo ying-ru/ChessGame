@@ -1,16 +1,15 @@
 package server.rmi;
 
-
 import java.rmi.RemoteException;
 import java.util.LinkedList;
-
 import server.jdbc.DataBase;
 import server.rule.ChessBoard;
 import server.rule.Rule;
+
 /**  房間結束時回傳資料 以及刪除房間問題     **/
 public class Room 
 {
-	int roomNum;
+	private int roomNum;
 	private ChessBoard chessBoard;
 	private String player0UserToken;
 	private String player1UserToken;
@@ -20,6 +19,8 @@ public class Room
 	private Rule temp;
 	private boolean first = true;
 	private boolean isEnd = false;
+	private Thread playTooLong;
+	private String updatePlayer0, updatePlayer1;
 	
 	public Room(int roomNum,String player0UserToken,String player1UserToken, DataBase dataBase) 
 	{
@@ -29,6 +30,9 @@ public class Room
 		this.player0UserToken = player0UserToken;
 		this.player1UserToken = player1UserToken;
 		this.dataBase = dataBase;
+		this.updatePlayer0 = null;
+		this.updatePlayer1 = null;
+		update();
 	}
 	
 	public int getRoomNum() {
@@ -78,12 +82,23 @@ public class Room
 	
 	//判斷輸贏結果
 	public boolean isWin(String userToken) {
+		String rivalToken;
+		setUpdatePlayer(userToken);
+		if (userToken.equals(player0UserToken)) {
+			rivalToken = player1UserToken;
+		} else {
+			rivalToken = player0UserToken;
+		}
 		if (getScore(userToken) == 16 && !isEnd) {
+			isEnd = true;
 			int win = dataBase.selectWin(userToken);
 			int lose = dataBase.selectLose(userToken);
 			win++;
-			isEnd = true;
 			dataBase.update(userToken, win, lose);
+			win = dataBase.selectWin(rivalToken);
+			lose = dataBase.selectLose(rivalToken);
+			lose++;
+			dataBase.update(rivalToken, win, lose);
 			chatMsg.add("<系統> ： " + userToken + "獲勝");
 			chatMsg.add("<系統> ： " + userToken + "獲勝");
 			return true;
@@ -151,10 +166,11 @@ public class Room
 		return ActionSuccess;
 	}
 	
-	public boolean isTurnUser(String UserToken)
+	public boolean isTurnUser(String userToken)
 			throws RemoteException {
 		// TODO Auto-generated method stub
-		boolean turnUser = (nowPlay == 0 && UserToken.equals(player0UserToken)) || (nowPlay == 1 && UserToken.equals(player1UserToken));
+		setUpdatePlayer(userToken);
+		boolean turnUser = (nowPlay == 0 && userToken.equals(player0UserToken)) || (nowPlay == 1 && userToken.equals(player1UserToken));
 		return turnUser;
 	}
 	
@@ -179,20 +195,103 @@ public class Room
 	public void exit(String userToken)
 			throws RemoteException {
 		// TODO Auto-generated method stub
+		
 		chatMsg.add("<系統> ： " + userToken + "離開");
 		//判斷獲勝
+		String rivalToken;
+		if (userToken.equals(player0UserToken)) {
+			rivalToken = player1UserToken;
+		} else {
+			rivalToken = player0UserToken;
+		}
 		if (userToken.equals(player0UserToken)) {
 			userToken = player1UserToken;
 		} else {
 			userToken = player0UserToken;
 		}
 		if (!isEnd) {
+			isEnd = true;
 			int win = dataBase.selectWin(userToken);
 			int lose = dataBase.selectLose(userToken);
 			win++;
-			isEnd = true;
 			dataBase.update(userToken, win, lose);
+			win = dataBase.selectWin(rivalToken);
+			lose = dataBase.selectLose(rivalToken);
+			lose++;
+			dataBase.update(rivalToken, win, lose);
+			chatMsg.add("<系統> ： " + userToken + "獲勝");
 			chatMsg.add("<系統> ： " + userToken + "獲勝");
 		}
+		
+	}
+	
+	private void setUpdatePlayer(String userToken) {
+		if (userToken.equals(player0UserToken)) {
+			updatePlayer0 = userToken;
+		} else {
+			updatePlayer1 = userToken;
+		}
+	}
+	
+	private void update() {
+		playTooLong = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				int count0 = 0;
+				int count1 = 0;
+				try {
+					while (true) {
+						Thread.sleep(500);
+						if (updatePlayer0 == null && count0 < 130) {
+							count0++;
+						} else if (count0 >= 130) {
+							chatMsg.add("<系統> ： " + player0UserToken + "斷線。");
+							if (!isEnd) {
+								isEnd = true;
+								int win = dataBase.selectWin(player1UserToken);
+								int lose = dataBase.selectLose(player1UserToken);
+								win++;
+								dataBase.update(player1UserToken, win, lose);
+								win = dataBase.selectWin(player0UserToken);
+								lose = dataBase.selectLose(player0UserToken);
+								lose++;
+								dataBase.update(player0UserToken, win, lose);
+								chatMsg.add("<系統> ： " + player1UserToken + "獲勝");
+								chatMsg.add("<系統> ： " + player1UserToken + "獲勝");
+							}
+						} else {
+							updatePlayer0 = null;
+							count0 = 0;
+						}
+						if (updatePlayer1 == null && count1 < 130) {
+							count1++;
+						} else if (count1 >= 130) {
+							chatMsg.add("<系統> ： " + player1UserToken + "斷線。");
+							if (!isEnd) {
+								isEnd = true;
+								int win = dataBase.selectWin(player0UserToken);
+								int lose = dataBase.selectLose(player0UserToken);
+								win++;
+								dataBase.update(player0UserToken, win, lose);
+								win = dataBase.selectWin(player1UserToken);
+								lose = dataBase.selectLose(player1UserToken);
+								lose++;
+								dataBase.update(player1UserToken, win, lose);
+								chatMsg.add("<系統> ： " + player0UserToken + "獲勝");
+								chatMsg.add("<系統> ： " + player0UserToken + "獲勝");
+							}
+						} else {
+							updatePlayer1 = null;
+							count1 = 0;
+						}
+					}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		playTooLong.start();
 	}
 }

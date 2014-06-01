@@ -9,13 +9,9 @@ import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Observable;
-import java.util.Observer;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-
 import rmi.GameClient;
 import ui.ChatPanel;
 import ui.MainFrame;
@@ -29,7 +25,7 @@ public class PlayRoom extends MainFrame {
 	private ImageIcon backgroundPhoto;
 	private GameClient server;
 	private String userToken;
-	private Thread updateScore, playTooLong;
+	private Thread playTooLong;
 	private boolean isRemind = false;
 //	private Observable obs;
 
@@ -49,7 +45,7 @@ public class PlayRoom extends MainFrame {
 		revalidate();
 		repaint();
 		testDrive();
-		updateScore();
+		
 		time();
 	}
 	
@@ -137,7 +133,7 @@ public class PlayRoom extends MainFrame {
 //		chessBoard.setLocation(50, 185);
 	}
 	
-	private int getScore(String userToken) {
+	public int getScore(String userToken) {
 		int score;
 		score = -1;
 		try {
@@ -151,65 +147,7 @@ public class PlayRoom extends MainFrame {
 		return score;
 	}
 	
-	private void updateScore() {
-		updateScore = new Thread(new Runnable() {
-//		boolean turnAnother = true;
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				try {
-					while (true) {
-						Thread.sleep(1000 * 1);
-						// update score start
-						if (!server.s.isWin(server.getRoom(), userToken)) {
-							int scoreA = getScore(userToken);
-							int scoreB = getScore(server.getRivalToken(userToken));
-							playerInfo.setPlayerAScore(scoreA + "");
-							playerInfo.setPlayerBScore(scoreB + "");
-							if (scoreB - scoreA > 7) {
-								appendChatArea("<系統> ： " + userToken + "OH！該加油了！");
-							}
-							if (scoreA > 11) {
-								appendChatArea("<系統> ： " + userToken + "加油，快贏對方了！");
-							}
-						}
-						// update score end
-						if (server.s.isTurnUser(server.getRoom(), userToken)) {
-							changePlay("輪到你了");
-						} else {
-							changePlay("等待對方");
-						}
-					}
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
-					updateScore.suspend();
-					
-					int room = server.getRoom();
-					while (room == -1) {
-						try {
-							Thread.sleep(1000 * 5);
-						} catch (InterruptedException e2) {
-							// TODO Auto-generated catch block
-							e2.printStackTrace();
-						}
-						try {
-							server.s.connect(userToken);
-						} catch (RemoteException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						room = server.getRoom();
-						System.out.println("room" + room);
-					}
-					e.printStackTrace();
-				}
-			}
-		});
-		updateScore.start();
-	}
+	
 	
 	private void time() {
 		playTooLong = new Thread(new Runnable() {

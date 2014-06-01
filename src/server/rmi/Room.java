@@ -176,5 +176,9 @@ public class Room
 		return hasNewMsg;
 	}
 	
-	
+	public void exit(String userToken)
+			throws RemoteException {
+		// TODO Auto-generated method stub
+		chatMsg.add("<系統> ： " + userToken + "獲勝");
+	}
 }

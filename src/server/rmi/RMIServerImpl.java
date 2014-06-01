@@ -208,4 +208,14 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 		dataBase.selectLose(userToken);
 		return 0;
 	}
+
+	@Override
+	public void exit(int roomNum, String userToken) throws RemoteException {
+		// TODO Auto-generated method stub
+		/**
+		 * remove online(1 player exit), roomlist(2 player exit or game over) 
+		 */
+		
+		roomlist.get(getRoomIndex(roomNum)).exit(userToken);
+	}
 }

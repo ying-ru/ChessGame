@@ -23,4 +23,5 @@ public String check(String APIToken,String SecretToken) throws java.rmi.RemoteEx
 	public boolean isWin(int roomNum, String userToken) throws java.rmi.RemoteException;
 	public int getWin(String userToken) throws java.rmi.RemoteException;
 	public int getLose(String userToken) throws java.rmi.RemoteException;
+	public void exit(int roomNum, String userToken) throws java.rmi.RemoteException;
 }

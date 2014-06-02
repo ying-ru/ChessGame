@@ -1,9 +1,7 @@
 package game;
 
 import java.rmi.RemoteException;
-
 import rmi.GameClient;
-import control.Controller;
 import data.MainData;
 import ui.playRoom.PlayRoom;
 
@@ -12,7 +10,6 @@ public class PlayGame {
 	GameClient server;
 	int chessBoardWidth, chessBoardHeight;
 	MainData data;
-	Controller controler;
 	String userToken;
 	
 	public PlayGame(String userToken, String secretToken) {
@@ -39,13 +36,10 @@ public class PlayGame {
 		chessBoardWidth = playRoom.getChessBoard().getChessBoardWidth();
 		chessBoardHeight = playRoom.getChessBoard().getChessBoardHeight();
 		data = new MainData(chessBoardWidth, chessBoardHeight, server, userToken);
-		controler = new Controller(chessBoardWidth, chessBoardHeight);
 		
 		// set observer observable
 		data.getChessPieceList().addObserver(playRoom.getChessBoard());
-		data.getChessPieceList().addObserver(controler.getChessPieceCoordinate());
 		data.getChessPieceList().addObserver(playRoom.getChatPanel());
-		playRoom.getChessBoard().getChessGameObservable().addObserver(controler.getTransferFrameXY());
 		playRoom.getChessBoard().getChessGameObservable().addObserver(data.getChessPieceList());
 		// set observer observable end
 		data.getChessPieceList().initChessPiece();

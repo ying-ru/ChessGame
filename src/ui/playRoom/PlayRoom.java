@@ -214,8 +214,9 @@ public class PlayRoom extends MainFrame {
 										.equals("AM")))) {
 							if (d.getHours() == 0) {
 								appendChatArea("<系統> ： " + 12 + "點了，很晚囉。");
+							} else {
+								appendChatArea("<系統> ： " + d.getHours() + "點了，很晚囉。");
 							}
-							appendChatArea("<系統> ： " + d.getHours() + "點了，很晚囉。");
 							isRemind = true;
 						}
 						Thread.sleep(1000 * 5);

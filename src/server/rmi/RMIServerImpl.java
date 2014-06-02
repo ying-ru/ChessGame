@@ -6,6 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Observable;
+import java.util.Observer;
+
+import data.chessPiece.ChessPieceList;
 import server.jdbc.DataBase;
 import server.data.player.Player;
 
@@ -15,6 +19,7 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 	private int count = 0;
 	private LinkedList<Room> roomlist = new LinkedList<Room>();
 	private DataBase dataBase;
+	
 	// private LinkedList<String> waitingPlayer = new LinkedList<String>();/**
 	// 形態要改過? **/
 
@@ -140,14 +145,7 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 				userToken, xOfStart, yOfStart, xOfEnd, yOfEnd);
 		return ActionSuccess;
 	}
-
-	// public boolean openChess(int roomNum,String userToken,int x,int y)
-	// {
-	// boolean ActionSuccess = false ;
-	// ActionSuccess =
-	// roomlist.get(getRoomIndex(roomNum)).openChess(userToken,x, y);
-	// return ActionSuccess;
-	// }
+	
 	public String[][] updateChessBoardInfo(int roomNum, String userToken) {
 		return roomlist.get(getRoomIndex(roomNum)).updateChessBoardInfo(
 				userToken);
@@ -163,39 +161,33 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 	@Override
 	public boolean isTurnUser(int roomNum, String userToken)
 			throws RemoteException {
-		// TODO Auto-generated method stub
 		return roomlist.get(getRoomIndex(roomNum)).isTurnUser(userToken);
 	}
 
 	@Override
 	public String updateChat(int roomNum)
 			throws RemoteException {
-		// TODO Auto-generated method stub
 		return roomlist.get(getRoomIndex(roomNum)).updateChat();
 	}
 
 	@Override
 	public boolean hasNewMsg(int roomNum)
 			throws RemoteException {
-		// TODO Auto-generated method stub
 		return roomlist.get(getRoomIndex(roomNum)).hasNewMsg();
 	}
 
 	@Override
 	public int getScore(int roomNum, String userToken) throws RemoteException {
-		// TODO Auto-generated method stub
 		return roomlist.get(getRoomIndex(roomNum)).getScore(userToken);
 	}
 
 	@Override
 	public boolean isWin(int roomNum, String userToken) throws RemoteException {
-		// TODO Auto-generated method stub
 		return roomlist.get(getRoomIndex(roomNum)).isWin(userToken);
 	}
 
 	@Override
 	public int getWin(String userToken) throws RemoteException {
-		// TODO Auto-generated method stub
 		dataBase.selectUser(userToken);
 		dataBase.selectWin(userToken);
 		return 0;
@@ -203,7 +195,6 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 
 	@Override
 	public int getLose(String userToken) throws RemoteException {
-		// TODO Auto-generated method stub
 		dataBase.selectUser(userToken);
 		dataBase.selectLose(userToken);
 		return 0;
@@ -211,7 +202,6 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 	
 	@Override
 	public void exit(int roomNum, String userToken) throws RemoteException {
-		// TODO Auto-generated method stub
 		/**
 		 * remove online(1 player exit), roomlist(2 player exit or game over) 
 		 * display who leave & who win
@@ -224,5 +214,52 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 			}
 		}
 //		dataBase.delete(userToken);
+	}
+	
+	@Override
+	public boolean isGameOver(int roomNum) throws RemoteException {
+		return roomlist.get(getRoomIndex(roomNum)).isGameOver();
+	}
+
+	@Override
+	public void printResult(int roomNum, String userToken) throws RemoteException {
+		roomlist.get(getRoomIndex(roomNum)).printResult(userToken);
+	}
+
+	@Override
+	public void removePlayer(int roomNum) throws RemoteException {
+		Room room = roomlist.get(getRoomIndex(roomNum));
+		String status = room.getStatus();
+		String player0 = room.getPlayer0UserToken();
+		String player1 = room.getPlayer1UserToken();
+		if (isGameOver(roomNum)) {
+			if (status.equals("disconnect0Again") || status.equals("disconnect1OK")) {
+				for (int i = 0; i < online.size(); i++) {
+					if (online.get(i).getUserToken().equals(player1)) {
+						room.chatMsg.add("<系統> ： 遊戲結束，中斷連線。");
+						System.out.println(player1 + "leave");
+						online.remove(i);
+					}
+				}
+			} else if (status.equals("disconnect0OK") || status.equals("disconnect1Again")) {
+				for (int i = 0; i < online.size(); i++) {
+					if (online.get(i).getUserToken().equals(player0)) {
+						room.chatMsg.add("<系統> ： 遊戲結束，中斷連線。");
+						System.out.println(player0 + "leave");
+						online.remove(i);
+					}
+				}
+			} else if (status.equals("OK")) {
+				for (int i = 0; i < online.size(); i++) {
+					room.chatMsg.add("<系統> ： 遊戲結束，中斷連線。");
+					room.chatMsg.add("<系統> ： 遊戲結束，中斷連線。");
+					System.out.println(player0 + "leave");
+					System.out.println(player1 + "leave");
+					if (online.get(i).getUserToken().equals(player0) || online.get(i).getUserToken().equals(player1)) {
+						online.remove(i);
+					}
+				}
+			}
+		}
 	}
 }

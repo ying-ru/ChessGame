@@ -24,4 +24,7 @@ public String check(String APIToken,String SecretToken) throws java.rmi.RemoteEx
 	public int getWin(String userToken) throws java.rmi.RemoteException;
 	public int getLose(String userToken) throws java.rmi.RemoteException;
 	public void exit(int roomNum, String userToken) throws java.rmi.RemoteException;
+	public boolean isGameOver(int roomNum) throws java.rmi.RemoteException;
+	public void printResult(int roomNum, String userToken) throws java.rmi.RemoteException;
+	public void removePlayer(int roomNum) throws java.rmi.RemoteException;
 }

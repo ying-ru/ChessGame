@@ -123,6 +123,7 @@ public class ChessPieceList extends Observable implements Observer {
 						} else if (!server.s.isTurnUser(server.getRoom(), userToken)) {
 							update = true;
 						}
+						
 					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block

@@ -188,37 +188,18 @@ public class PlayRoom extends MainFrame {
 						} else {
 							changePlay("等待對方");
 						}
+						if (server.s.isGameOver(server.getRoom())) {
+							server.s.printResult(server.getRoom(), userToken);
+						}
+						server.s.removePlayer(server.getRoom());
 					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
-//					updateScore.suspend();
-//					updateChessBoard.suspend();
 					appendChatArea("<系統> ： 連線中斷，請重新開啟遊戲。");
 					appendChatArea("<系統> ： 若 60 秒仍然無法連線，則強制斷線，並判為輸局。");
-//					int room = -1;
-//					while (room == -1) {
-//						try {
-//							Thread.sleep(1000 * 60);
-//						} catch (InterruptedException e2) {
-//							// TODO Auto-generated catch block
-//							e2.printStackTrace();
-//						}
-//						try {
-//							server.s.connect(userToken);
-//							appendChatArea("<系統> ： 重新連線成功。");
-//							updateScore.resume();
-////							updateChessBoard.resume();
-//						} catch (RemoteException e1) {
-//							// TODO Auto-generated catch block
-//							appendChatArea("<系統> ： 重新連線失敗。");
-//							e1.printStackTrace();
-//						}
-//						room = server.getRoom();
-//						System.out.println("room" + room);
-//					}
 					e.printStackTrace();
 				}
 			}
@@ -242,7 +223,7 @@ public class PlayRoom extends MainFrame {
 							isRemind = false;
 						}
 //						System.out.println(d.getHours()+" : "+d.getMinutes()+" : "+d.getSeconds() + " " + formet);
-						if (!isRemind && ((d.getHours() > 10 && formet.equals("PM")) || (d.getHours() < 4 && formet.equals("AM")))) {
+						if (!isRemind && ((d.getHours() > 10 && d.getHours() < 12 && formet.equals("PM")) || (d.getHours() < 4 && formet.equals("AM")))) {
 							if (d.getHours() == 0) {
 								appendChatArea("<系統> ： " + 12 + "點了，很晚囉。");
 							}

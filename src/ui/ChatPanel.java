@@ -137,6 +137,8 @@ public class ChatPanel extends JPanel implements Observer {
 					e.printStackTrace();
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
+					appendChatArea("<系統> ： 連線中斷，請重新開啟遊戲。");
+					appendChatArea("<系統> ： 若 60 秒仍然無法連線，則強制斷線，並判為輸局。");
 					e.printStackTrace();
 				}
 			}

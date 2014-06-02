@@ -16,6 +16,7 @@ public class Server {
 				System.out.println("Registering ...");
 				Naming.rebind("ChessGame", name);	// the name of the service
 				System.out.println("Register success");
+//				Room.addObserver(name);
 			}
 			catch(Exception e)
 			{

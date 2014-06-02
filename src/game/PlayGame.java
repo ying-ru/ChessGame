@@ -48,6 +48,7 @@ public class PlayGame {
 		// set observer observable
 		data.getChessPieceList().addObserver(playRoom.getChessBoard());
 		data.getChessPieceList().addObserver(controler.getChessPieceCoordinate());
+		data.getChessPieceList().addObserver(playRoom.getChatPanel());
 		playRoom.getChessBoard().getChessGameObservable().addObserver(controler.getTransferFrameXY());
 		playRoom.getChessBoard().getChessGameObservable().addObserver(data.getChessPieceList());
 		// set observer observable end

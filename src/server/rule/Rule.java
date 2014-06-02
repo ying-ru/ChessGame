@@ -7,9 +7,11 @@ public class Rule {
 	int player0 = 0;// count score of player1
 	int player1 = 0;// count score of player2
 	boolean colorEqualNowplay = true;
+	boolean first;
 
 	public boolean moveRule(boolean first, int nowPlay, ChessBoard chessBoard1, int x, int y, int toX, int toY) {
 		this.chessBoard = chessBoard1.getChessBoard();
+		this.first = first;
 		if (!colorEqualNowplay && !first) {
 			nowPlay = (nowPlay + 1) % 2;
 		}
@@ -83,7 +85,7 @@ public class Rule {
 										chessBoard[y][x].setY(toX);
 										chessBoard[toY][toX] = chessBoard[y][x];
 										chessBoard[y][x] = null;
-										if (chessBoard[toY][toX].getColor() == 0) { // 0 = red
+										if (nowPlay == 0) { // 0 = red
 											player0++;
 										} else { // black
 											player1++;
@@ -123,7 +125,7 @@ public class Rule {
 										chessBoard[y][x].setY(toX);
 										chessBoard[toY][toX] = chessBoard[y][x];
 										chessBoard[y][x] = null;
-										if (chessBoard[toY][toX].getColor() == 0) {  
+										if (nowPlay == 0) {  
 											player0++;
 										} else {
 											player1++;
@@ -138,7 +140,7 @@ public class Rule {
 											chessBoard[y][x].setY(toX);
 											chessBoard[toY][toX] = chessBoard[y][x];
 											chessBoard[y][x] = null;
-											if (chessBoard[toY][toX].getColor() == 0) {
+											if (nowPlay == 0) {
 												player0++;
 											} else {
 												player1++;
@@ -166,6 +168,9 @@ public class Rule {
 		return false;
 	}
 	public int score(int nowPlay) {
+		if (!colorEqualNowplay && !first) {
+			nowPlay = (nowPlay + 1) % 2;
+		}
 		if (nowPlay == 0) {
 			return player0;
 		} else {

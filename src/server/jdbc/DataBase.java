@@ -57,8 +57,8 @@ public class DataBase {
 		this.win = win;
 		this.lose = lose;
 		String update = "UPDATE player_info "
-				+ "SET win = " + win + "SET lose = " + lose
-				+ "WHERE user_token = '" + user_token + "'";
+				+ " SET win = " + win + ", lose = " + lose
+				+ " WHERE user_token = '" + user_token + "'";
 		try {
 			stmt = connection.createStatement();
 			int result = stmt.executeUpdate(update);
@@ -89,6 +89,7 @@ public class DataBase {
 		try {
 			stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(selectUser);
+			rs.next();
 			if (rs.getString(1) == null) {
 				return false;
 			} else {
@@ -109,8 +110,9 @@ public class DataBase {
 		try {
 			stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(selectWin);
+			rs.next();
 			win = Integer.parseInt(rs.getString(1));
-			System.out.println(userToken.toString() + " win: " + rs.getString(1));
+			System.out.println(userToken.toString() + " win: " + win);
 		} catch (SQLException e) {
 			System.out.println("CreateDB Exception :" + e.toString());
 		}
@@ -124,6 +126,7 @@ public class DataBase {
 		try {
 			stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(selectLose);
+			rs.next();
 			lose = Integer.parseInt(rs.getString(1));
 			System.out.println(userToken.toString() + " lose: " + rs.getString(1));
 		} catch (SQLException e) {
@@ -139,14 +142,15 @@ public class DataBase {
 		}
 	}
 	
-//	public static void main(String[] args) {
-//		DataBase db = new DataBase();
+	public static void main(String[] args) {
+		DataBase db = new DataBase();
 //		db.delete("123");
 //		db.delete(null);
+//		db.update("123", 0, 1);
 //		System.out.println(db.selectUser("123"));
 //		db.insert("123");
-//		db.selectWin("123");
+		db.selectWin("123");
 //		db.close();
-//	}
+	}
 	
 }

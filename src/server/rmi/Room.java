@@ -253,6 +253,7 @@ public class Room {
 
 	public void exit(String userToken) throws RemoteException {
 		String rivalToken;
+		boolean isPlayer0 = userToken.equals(player0UserToken);
 		if (userToken.equals(player0UserToken)) {
 			rivalToken = player1UserToken;
 		} else {
@@ -266,7 +267,7 @@ public class Room {
 		if (!isEnd) {
 			isEnd = true;
 			isGameOver = true;
-			if (userToken.equals(player0UserToken)) {
+			if (isPlayer0) {
 				status = "exit0";
 			} else {
 				status = "exit1";
@@ -315,17 +316,17 @@ public class Room {
 			chatMsg.add("<系統> ： 玩家<" + player0UserToken + ">獲勝");
 			chatMsg.add("<系統> ： 玩家<" + player0UserToken + ">獲勝");
 		} else if (status.equals("outcome1")) {
-			status = "";
+			status = "OK";
 			chatMsg.add("<系統> ： 玩家<" + player1UserToken + ">獲勝");
 			chatMsg.add("<系統> ： 玩家<" + player1UserToken + ">獲勝");
 		} else if (status.equals("exit0")) {
 			status = "OK";
 			chatMsg.add("<系統> ： " + player0UserToken + " 離開此局");
 			chatMsg.add("<系統> ： " + player0UserToken + " 離開此局");
-			chatMsg.add("<系統> ： " + player1UserToken + " 獲勝");
-			chatMsg.add("<系統> ： " + player1UserToken + " 獲勝");
+			chatMsg.add("<系統> ： 玩家<" + player1UserToken + ">獲勝");
+			chatMsg.add("<系統> ： 玩家<" + player1UserToken + ">獲勝");
 		} else if (status.equals("exit1")) {
-			status = "";
+			status = "OK";
 			chatMsg.add("<系統> ： " + player1UserToken + " 離開此局");
 			chatMsg.add("<系統> ： " + player1UserToken + " 離開此局");
 			chatMsg.add("<系統> ： 玩家<" + player0UserToken + ">獲勝");

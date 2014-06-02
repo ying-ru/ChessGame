@@ -51,17 +51,17 @@ public class PlayRoom extends MainFrame {
 	private void setPlayer() {
 		// setPlayerAPhoto(new ImageIcon("C:/sqa/wallpaper/Desert.jpg"));
 		setPlayerAInfoName(userToken);
-		// setPlayerAInfoWin(server.getWin(userToken));
-		// setPlayerAInfoLose(server.getWin(userToken));
-		setPlayerAInfoWin(1);
-		setPlayerAInfoLose(2);
+		setPlayerAInfoWin(server.getWin(userToken));
+		setPlayerAInfoLose(server.getLose(userToken));
+//		setPlayerAInfoWin(1);
+//		setPlayerAInfoLose(2);
 
 		// setPlayerBPhoto(new ImageIcon("C:/sqa/wallpaper/Jellyfish.jpg"));
 		setPlayerBInfoName(server.getRivalToken(userToken));
-		// setPlayerBInfoWin(server.getWin(server.getRivalToken(userToken)));
-		// setPlayerBInfoLose(server.getLose(server.getRivalToken(userToken)));
-		setPlayerBInfoWin(3);
-		setPlayerBInfoLose(4);
+		setPlayerBInfoWin(server.getWin(server.getRivalToken(userToken)));
+		setPlayerBInfoLose(server.getLose(server.getRivalToken(userToken)));
+//		setPlayerBInfoWin(3);
+//		setPlayerBInfoLose(4);
 	}
 
 	// init Component //

@@ -167,15 +167,13 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 	@Override
 	public int getWin(String userToken) throws RemoteException {
 		dataBase.selectUser(userToken);
-		dataBase.selectWin(userToken);
-		return 0;
+		return dataBase.selectWin(userToken);
 	}
 
 	@Override
 	public int getLose(String userToken) throws RemoteException {
 		dataBase.selectUser(userToken);
-		dataBase.selectLose(userToken);
-		return 0;
+		return dataBase.selectLose(userToken);
 	}
 
 	@Override

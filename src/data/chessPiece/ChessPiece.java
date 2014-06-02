@@ -10,7 +10,6 @@ public class ChessPiece extends ChessPiecePicture {
 	private int grid;
 	
 	public ChessPiece(Point point, int chessCoorX, int chessCoorY, int grid, String chessName, ChessPieceLocation chessBoardLoc) {
-		// TODO Auto-generated constructor stub
 		super(point, grid, chessName);
 		this.grid = grid;
 		this.chessBoardLoc = chessBoardLoc;

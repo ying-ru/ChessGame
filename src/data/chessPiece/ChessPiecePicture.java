@@ -14,11 +14,9 @@ public class ChessPiecePicture extends JComponent {
 	private String photoSubPath = "/ChessPiece/";
 	
 	public ChessPiecePicture(Point point, int grid, String chessName) {
-		// TODO Auto-generated constructor stub
 		this.chessName = chessName;
 		this.grid = grid;
 		this.path = photoSubPath + chessName + ".png";
-//		setBounds(((int) point.getX()), ((int) point.getY()), 60, 60);
 		setBounds(((int) point.getX()), ((int) point.getY()), grid, grid);
 	}
 	

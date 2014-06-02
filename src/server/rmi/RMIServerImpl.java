@@ -6,10 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Observable;
-import java.util.Observer;
-
-import data.chessPiece.ChessPieceList;
 import server.jdbc.DataBase;
 import server.data.player.Player;
 
@@ -17,29 +13,16 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 		ServerInterface {
 	private int roomNum = 0;
 	private int count = 0;
-	private LinkedList<Room> roomlist = new LinkedList<Room>();
 	private DataBase dataBase;
-	
-	// private LinkedList<String> waitingPlayer = new LinkedList<String>();/**
-	// 形態要改過? **/
-
+	private LinkedList<Room> roomlist = new LinkedList<Room>();
 	private HashMap<String, Integer> waitingPlayer = new HashMap<String, Integer>();
 	private LinkedList<Player> online = new LinkedList<Player>();// 紀錄每個玩家屬於哪個房間
 
-	// This implementation must have a public constructor.
-	// The constructor throws a RemoteException.
 	public RMIServerImpl() throws java.rmi.RemoteException {
-		super(); // Use constructor of parent class
+		super();
 		dataBase = new DataBase();
 	}
-	
-	// Implementation of the service defended in the interface
-	public String check(String APIToken, String SecretToken) { //if check fail?
-		String startTime = getDateTime();
-		return startTime;
-	}
 
-	// 以下為寫完的method
 	private String getDateTime() {
 		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 		Date date = new Date();
@@ -47,8 +30,26 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 		return strDate;
 	}
 
-	public int connect(String userToken)// 隨機配對
+	private int getRoomIndex(int roomNum)// 找到實際的位址
 	{
+		int roomIndex = -1;
+		for (int i = 0; i < roomlist.size(); i++) {
+			if (roomlist.get(i).getRoomNum() == roomNum) {
+				roomIndex = roomlist.get(i).getRoomNum();
+			}
+		}
+		return roomIndex;
+	}
+
+	// API
+	@Override
+	public String check(String APIToken, String SecretToken) { // if check fail?
+		String startTime = getDateTime();
+		return startTime;
+	}
+
+	@Override
+	public int connect(String userToken) {
 		Player user;
 		Player rival;
 		String rivalToken = "";
@@ -68,9 +69,7 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 					break;
 				}
 			}
-			// 隨機找尋等待玩家清單中的人
 			Room room;
-			
 			room = new Room(roomNum, userToken, rivalToken, dataBase);
 			user = new Player(userToken, roomNum);
 			rival = new Player(rivalToken, roomNum);
@@ -79,12 +78,12 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 			online.add(rival);
 			count = (count + 1) % 2;
 			waitingPlayer.remove(rivalToken);
-			
 			roomNum++;
-			return roomNum-1;
+			return roomNum - 1;
 		}
 	}
 
+	@Override
 	public int getRoomNum(String userToken) {
 		int roomNum;
 		roomNum = -1;
@@ -96,16 +95,17 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 		return roomNum;
 	}
 
-	// 配對成功後 對手1取得對手的Token
+	@Override
 	public String getRivalToken(int roomNum, String userToken) {
-		if (roomlist.get(getRoomIndex(roomNum)).getPlayer0UserToken().equals(userToken)) {
+		if (roomlist.get(getRoomIndex(roomNum)).getPlayer0UserToken()
+				.equals(userToken)) {
 			return roomlist.get(getRoomIndex(roomNum)).getPlayer1UserToken();
 		} else {
 			return roomlist.get(getRoomIndex(roomNum)).getPlayer0UserToken();
 		}
 	}
-	
-	
+
+	@Override
 	public Player getRivalData(String rivalToken) {
 		Player p = null;
 		for (int i = 0; i < online.size(); i++) {
@@ -116,28 +116,7 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 		return p;
 	}
 
-	public int connect(String userToken, String rivalToken)// 選擇玩家
-	{
-		Room room = new Room(roomNum, userToken, rivalToken, dataBase);
-		roomNum++;
-		roomlist.add(room);
-		waitingPlayer.put(rivalToken, roomNum);
-		
-		// 給一個RoomNumber
-		return room.getRoomNum();
-	}
-
-	private int getRoomIndex(int roomNum)// 找到實際的位址
-	{
-		int roomIndex = -1;
-		for (int i = 0; i < roomlist.size(); i++) {
-			if (roomlist.get(i).getRoomNum() == roomNum) {
-				roomIndex = roomlist.get(i).getRoomNum();
-			}
-		}
-		return roomIndex;
-	}
-
+	@Override
 	public boolean moveChess(int roomNum, String userToken, int xOfStart,
 			int yOfStart, int xOfEnd, int yOfEnd) {
 		boolean ActionSuccess = false;
@@ -145,12 +124,13 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 				userToken, xOfStart, yOfStart, xOfEnd, yOfEnd);
 		return ActionSuccess;
 	}
-	
+
 	public String[][] updateChessBoardInfo(int roomNum, String userToken) {
 		return roomlist.get(getRoomIndex(roomNum)).updateChessBoardInfo(
 				userToken);
 	}
 
+	@Override
 	public boolean chat(int roomNum, String userToken, String msg) {
 		boolean ActionSuccess = false;
 		ActionSuccess = roomlist.get(getRoomIndex(roomNum))
@@ -165,14 +145,12 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public String updateChat(int roomNum)
-			throws RemoteException {
+	public String updateChat(int roomNum) throws RemoteException {
 		return roomlist.get(getRoomIndex(roomNum)).updateChat();
 	}
 
 	@Override
-	public boolean hasNewMsg(int roomNum)
-			throws RemoteException {
+	public boolean hasNewMsg(int roomNum) throws RemoteException {
 		return roomlist.get(getRoomIndex(roomNum)).hasNewMsg();
 	}
 
@@ -199,30 +177,26 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 		dataBase.selectLose(userToken);
 		return 0;
 	}
-	
+
 	@Override
 	public void exit(int roomNum, String userToken) throws RemoteException {
-		/**
-		 * remove online(1 player exit), roomlist(2 player exit or game over) 
-		 * display who leave & who win
-		 */
-		
 		roomlist.get(getRoomIndex(roomNum)).exit(userToken);
 		for (int i = 0; i < online.size(); i++) {
 			if (online.get(i).getUserToken().equals(userToken)) {
 				online.remove(i);
 			}
 		}
-//		dataBase.delete(userToken);
+		// dataBase.delete(userToken);
 	}
-	
+
 	@Override
 	public boolean isGameOver(int roomNum) throws RemoteException {
 		return roomlist.get(getRoomIndex(roomNum)).isGameOver();
 	}
 
 	@Override
-	public void printResult(int roomNum, String userToken) throws RemoteException {
+	public void printResult(int roomNum, String userToken)
+			throws RemoteException {
 		roomlist.get(getRoomIndex(roomNum)).printResult(userToken);
 	}
 
@@ -233,7 +207,8 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 		String player0 = room.getPlayer0UserToken();
 		String player1 = room.getPlayer1UserToken();
 		if (isGameOver(roomNum)) {
-			if (status.equals("disconnect0Again") || status.equals("disconnect1OK")) {
+			if (status.equals("disconnect0Again")
+					|| status.equals("disconnect1OK")) {
 				for (int i = 0; i < online.size(); i++) {
 					if (online.get(i).getUserToken().equals(player1)) {
 						room.chatMsg.add("<系統> ： 遊戲結束，中斷連線。");
@@ -241,7 +216,8 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 						online.remove(i);
 					}
 				}
-			} else if (status.equals("disconnect0OK") || status.equals("disconnect1Again")) {
+			} else if (status.equals("disconnect0OK")
+					|| status.equals("disconnect1Again")) {
 				for (int i = 0; i < online.size(); i++) {
 					if (online.get(i).getUserToken().equals(player0)) {
 						room.chatMsg.add("<系統> ： 遊戲結束，中斷連線。");
@@ -255,11 +231,13 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 					room.chatMsg.add("<系統> ： 遊戲結束，中斷連線。");
 					System.out.println(player0 + "leave");
 					System.out.println(player1 + "leave");
-					if (online.get(i).getUserToken().equals(player0) || online.get(i).getUserToken().equals(player1)) {
+					if (online.get(i).getUserToken().equals(player0)
+							|| online.get(i).getUserToken().equals(player1)) {
 						online.remove(i);
 					}
 				}
 			}
 		}
 	}
+	// API END
 }

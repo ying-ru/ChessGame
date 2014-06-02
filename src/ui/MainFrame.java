@@ -5,9 +5,10 @@ import javax.swing.JFrame;
 
 public class MainFrame extends JFrame {
 	public MainFrame() {
-		// TODO Auto-generated constructor stub
-		Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		setSize((int)(screenSize.getWidth()/1.2), (int)(screenSize.getHeight()/1.2));
+		Dimension screenSize = java.awt.Toolkit.getDefaultToolkit()
+				.getScreenSize();
+		setSize((int) (screenSize.getWidth() / 2.4),
+				(int) (screenSize.getHeight() / 2.4));
 		setTitle("No芋暗棋");
 		setVisible(true);
 		setLayout(null);

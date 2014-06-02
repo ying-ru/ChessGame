@@ -20,9 +20,6 @@ public class Random {
 	}
 
 	public Random() {
-		// TODO Auto-generated constructor stub
-
-		// ChessBoard chessBoard1 = new ChessBoard(9, 5);
 		chessBoard = new Chess[5][9];
 		chessName = new String[5][9];
 		for (i = 0; i < 32; i++) {

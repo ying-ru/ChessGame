@@ -8,7 +8,6 @@ public class Controller {
 	private ChessPieceCoordinate chessPieceCoordinate;
 
 	public Controller(int width, int height) {
-		// TODO Auto-generated constructor stub
 		transferFrameXY = new TransferFrameXY(width, height);
 		chessPieceCoordinate = new ChessPieceCoordinate();
 	}

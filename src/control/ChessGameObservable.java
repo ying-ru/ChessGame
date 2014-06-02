@@ -2,6 +2,7 @@ package control;
 
 import java.util.Observable;
 import java.util.Observer;
+
 /*
  * for chess board
  */

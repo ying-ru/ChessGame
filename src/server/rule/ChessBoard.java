@@ -5,9 +5,9 @@ public class ChessBoard {
 	private Chess[][] chessBoard;
 	private String[][] chessName;
 	
-	public ChessBoard() /** 棋盤初始 尚未實作 **/
+	public ChessBoard()
 	{
-		Random random = new Random();//???
+		Random random = new Random();
 		chessBoard = random.getChessBoard();
 		chessName = random.getChessName();
 	}

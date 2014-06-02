@@ -11,8 +11,6 @@ public class ChessPieceLocation {
 	private int width, height;
 	
 	public ChessPieceLocation(int width, int height) {
-		
-//		 TODO Auto-generated constructor stub
 		chessLocation = new Point[4][8];
 		this.width = width;
 		this.height = height;
@@ -34,13 +32,6 @@ public class ChessPieceLocation {
 				chessLocation[i][j].y = heightFromPanelEdge + i * gridLength + gridLength / 20;
 			}
 		}
-		
-//		for (int i = 0; i < 4; i++) {
-//			for (int j = 0; j < 8; j++) {
-//				System.out.print("[" + chessLocation[i][j].x + "," + chessLocation[i][j].y + "]  \t  ");
-//			}
-//			System.out.println();
-//		}
 	}
 	
 	public int getGridLength() {
@@ -61,9 +52,4 @@ public class ChessPieceLocation {
 		}
 		return chessLocation[chessCoorY][chessCoorX];
 	}
-	
-//	public static void main(String[] args) {
-//		ChessBoardLocation c = new ChessBoardLocation(848, 790);
-//	}
-
 }

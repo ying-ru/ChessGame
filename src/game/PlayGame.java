@@ -8,8 +8,6 @@ import data.MainData;
 import ui.playRoom.PlayRoom;
 
 public class PlayGame {
-
-//	private String[][] chesses;
 	PlayRoom playRoom;
 	GameClient server;
 	int chessBoardWidth, chessBoardHeight;
@@ -33,10 +31,8 @@ public class PlayGame {
 			
 			System.out.println("room" + room);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		playRoom = new PlayRoom(server, userToken);

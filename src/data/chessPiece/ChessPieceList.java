@@ -26,7 +26,6 @@ public class ChessPieceList extends Observable implements Observer {
 		chessPieceList = new ArrayList<ChessPiece>();
 		initChessPiece();
 		updateChessBoard();
-		// TODO Auto-generated constructor stub
 	}
 
 	public void initChessPiece() {
@@ -62,9 +61,6 @@ public class ChessPieceList extends Observable implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
-		
-		// TODO Auto-generated method stub
 		if (arg instanceof ChessPiece) {
 			int locX = (((ChessPiece) arg).getFrameX() + ((ChessPiece) arg).getGrid() / 2);
 			int locY = (((ChessPiece) arg).getFrameY() + ((ChessPiece) arg).getGrid() / 2);
@@ -85,7 +81,6 @@ public class ChessPieceList extends Observable implements Observer {
 						((ChessPiece) arg).goBack();
 					}
 				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -101,7 +96,6 @@ public class ChessPieceList extends Observable implements Observer {
 		updateChessBoard = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				try {
 					boolean update;
 					update = true;
@@ -123,56 +117,14 @@ public class ChessPieceList extends Observable implements Observer {
 						} else if (!server.s.isTurnUser(server.getRoom(), userToken)) {
 							update = true;
 						}
-						
 					}
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
-//					updateScore.suspend();
-//					updateChessBoard.suspend();
-					addMsg("<系統> ： 連線中斷，請重新開啟遊戲。");
-					addMsg("<系統> ： 若 60 秒內仍然無法連線，則強制斷線，並判為輸局。");
-//					int room = server.getRoom();
-//					while (room == -1) {
-//						try {
-//							Thread.sleep(1000 * 10);
-//						} catch (InterruptedException e2) {
-//							// TODO Auto-generated catch block
-//							e2.printStackTrace();
-//						}
-//						try {
-//							server.s.connect(userToken);
-//							playRoom.appendChatArea("<系統> ： 重新連線成功。");
-//							updateScore.resume();
-//							updateChessBoard.resume();
-//						} catch (RemoteException e1) {
-//							// TODO Auto-generated catch block
-//							playRoom.appendChatArea("<系統> ： 重新連線失敗。");
-//							e1.printStackTrace();
-//						}
-//						room = server.getRoom();
-//						System.out.println("room" + room);
-//					}
 					e.printStackTrace();
 				}
 			}
 		});
 		updateChessBoard.start();
 	}
-//	
-//	public String[][] updateChessBoardInfo() {
-//		String[][] chesses = new String[8][4];
-//		for (int i = 0; i < 8; i++) {
-//			for (int j = 0; j < 4; j++) {
-//				chesses[i][j] = "cover";
-//			}
-//		}
-//		chesses[0][0] = "NULL";
-//		chesses[1][3] = "redHorse";
-//		return chesses;
-//	}
-	
-	
 }

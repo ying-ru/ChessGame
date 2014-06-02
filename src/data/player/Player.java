@@ -6,7 +6,6 @@ public class Player {
 	private String name = "";
 	private ImageIcon photo;
 	private int color, score;
-	private int win, lost;
 	
 	public Player(String name, ImageIcon photo, int color, int score) {
 		this.name = name;

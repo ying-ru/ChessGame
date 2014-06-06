@@ -3,13 +3,9 @@ package ui.playRoom;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
-import java.rmi.RemoteException;
-
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import rmi.GameClient;
 import data.player.Player;
 
 public class PlayerInfoJPanel extends JPanel {
@@ -67,22 +63,22 @@ public class PlayerInfoJPanel extends JPanel {
 	}
 
 	private void initJLabel() {
-		playerAWin = new JLabel("勝積：" + 0);
+		playerAWin = new JLabel("勝績：" + 0);
 		playerAWin.setBackground(Color.white);
 		playerAWin.setOpaque(true);
 		add(playerAWin);
 
-		playerBWin = new JLabel("勝積：" + 0);
+		playerBWin = new JLabel("勝績：" + 0);
 		playerBWin.setBackground(Color.white);
 		playerBWin.setOpaque(true);
 		add(playerBWin);
 
-		playerALose = new JLabel("敗積：" + 0);
+		playerALose = new JLabel("敗績：" + 0);
 		playerALose.setBackground(Color.white);
 		playerALose.setOpaque(true);
 		add(playerALose);
 
-		playerBLose = new JLabel("敗積：" + 0);
+		playerBLose = new JLabel("敗績：" + 0);
 		playerBLose.setBackground(Color.white);
 		playerBLose.setOpaque(true);
 		add(playerBLose);
@@ -162,19 +158,19 @@ public class PlayerInfoJPanel extends JPanel {
 
 	// API//
 	public void setPlayerAWin(int win) {
-		this.playerAWin.setText("勝積：" + win);
+		this.playerAWin.setText("勝績：" + win);
 	}
 
 	public void setPlayerBWin(int win) {
-		this.playerBWin.setText("勝積：" + win);
+		this.playerBWin.setText("勝績：" + win);
 	}
 
 	public void setPlayerALose(int lose) {
-		this.playerALose.setText("勝積：" + lose);
+		this.playerALose.setText("敗績：" + lose);
 	}
 
 	public void setPlayerBLose(int lose) {
-		this.playerBLose.setText("勝積：" + lose);
+		this.playerBLose.setText("敗績：" + lose);
 	}
 
 	public void setplayerAName(String name) {

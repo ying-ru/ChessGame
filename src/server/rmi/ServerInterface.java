@@ -31,9 +31,9 @@ public interface ServerInterface extends Remote {
 	public boolean isTurnUser(int roomNum, String userToken)
 			throws java.rmi.RemoteException;
 
-	public boolean hasNewMsg(int roomNum) throws java.rmi.RemoteException;
+	public boolean hasNewMsg(int roomNum, String userToken) throws java.rmi.RemoteException;
 
-	public String updateChat(int roomNum) throws java.rmi.RemoteException;
+	public String updateChat(int roomNum, String userToken) throws java.rmi.RemoteException;
 
 	public int getScore(int roomNum, String userToken)
 			throws java.rmi.RemoteException;

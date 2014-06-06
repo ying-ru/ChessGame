@@ -1,6 +1,7 @@
 package server.rmi;
 
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import server.jdbc.DataBase;
 import server.rule.ChessBoard;
@@ -10,20 +11,21 @@ import server.rule.Rule;
 public class Room {
 	private int roomNum;
 	private ChessBoard chessBoard;
+	private DataBase dataBase;
+	private Rule temp;
 	private String player0UserToken = "";
 	private String player1UserToken = "";
 	private int nowPlay = 0;
-	private DataBase dataBase;
-	private Rule temp;
 	private boolean first = true;
 	private boolean isEnd = false;
+	private boolean isGameOver = false;
 	private Thread playTooLong;
 	private String updatePlayer0, updatePlayer1;
-	private boolean isGameOver = false;
 	private String status;
-
-	public LinkedList<String> chatMsg = new LinkedList<String>();
-
+	private HashMap<String, LinkedList<String>> playerMsg = new HashMap<String, LinkedList<String>>();
+	public LinkedList<String> chatMsg0 = new LinkedList<String>();
+	public LinkedList<String> chatMsg1 = new LinkedList<String>();
+	
 	public Room(int roomNum, String player0UserToken, String player1UserToken,
 			DataBase dataBase) {
 		this.roomNum = roomNum;
@@ -34,6 +36,8 @@ public class Room {
 		this.dataBase = dataBase;
 		this.updatePlayer0 = null;
 		this.updatePlayer1 = null;
+		playerMsg.put(player1UserToken, chatMsg1);
+		playerMsg.put(player0UserToken, chatMsg0);
 		update();
 	}
 	
@@ -221,8 +225,8 @@ public class Room {
 
 	public boolean chat(String UserToken, String msg) {
 		boolean ActionSuccess = false;
-		chatMsg.add(msg);
-		chatMsg.add(msg);
+		chatMsg1.add(msg);
+		chatMsg0.add(msg);
 		return ActionSuccess;
 	}
 
@@ -237,17 +241,20 @@ public class Room {
 		return turnUser;
 	}
 
-	public String updateChat() throws RemoteException {
+	public String updateChat(String userToken) throws RemoteException {
 		String msg;
 		msg = "";
-		if (hasNewMsg()) {
-			msg = chatMsg.removeFirst();
+		if (hasNewMsg(userToken)) {
+			msg = playerMsg.get(userToken).removeFirst();
 		}
 		return msg;
 	}
 
-	public boolean hasNewMsg() throws RemoteException {
-		boolean hasNewMsg = !(chatMsg.isEmpty());
+	public boolean hasNewMsg(String userToken) throws RemoteException {
+		boolean hasNewMsg = false;
+		if (playerMsg.containsKey(userToken)) {
+			hasNewMsg = !playerMsg.get(userToken).isEmpty();
+		}
 		return hasNewMsg;
 	}
 
@@ -292,45 +299,45 @@ public class Room {
 			if (status.equals("disconnect0")
 					&& userToken.equals(player1UserToken)) {
 				status = "disconnect0Again";
-				chatMsg.add("<系統> ： 對方斷線");
-				chatMsg.add("<系統> ： 玩家<" + player1UserToken + ">獲勝");
+				chatMsg1.add("<系統> ： 對方斷線");
+				chatMsg1.add("<系統> ： 玩家<" + player1UserToken + ">獲勝");
 			} else if (userToken.equals(player0UserToken)) {
 				status = "disconnect0OK";
-				chatMsg.add("<系統> ： 上局斷線逾時");
-				chatMsg.add("<系統> ： 玩家<" + player1UserToken + ">獲勝");
+				chatMsg0.add("<系統> ： 上局斷線逾時");
+				chatMsg0.add("<系統> ： 玩家<" + player1UserToken + ">獲勝");
 			}
 		} else if (status.equals("disconnect1")
 				|| status.equals("disconnect1Again")) {
 			if (status.equals("disconnect1")
 					&& userToken.equals(player0UserToken)) {
 				status = "disconnect1Again";
-				chatMsg.add("<系統> ： 對方斷線");
-				chatMsg.add("<系統> ： 玩家<" + player0UserToken + ">獲勝");
+				chatMsg0.add("<系統> ： 對方斷線");
+				chatMsg0.add("<系統> ： 玩家<" + player0UserToken + ">獲勝");
 			} else if (userToken.equals(player1UserToken)) {
 				status = "disconnect1OK";
-				chatMsg.add("<系統> ： 上局斷線逾時");
-				chatMsg.add("<系統> ： 玩家<" + player0UserToken + ">獲勝");
+				chatMsg1.add("<系統> ： 上局斷線逾時");
+				chatMsg1.add("<系統> ： 玩家<" + player0UserToken + ">獲勝");
 			}
 		} else if (status.equals("outcome0")) {
 			status = "OK";
-			chatMsg.add("<系統> ： 玩家<" + player0UserToken + ">獲勝");
-			chatMsg.add("<系統> ： 玩家<" + player0UserToken + ">獲勝");
+			chatMsg0.add("<系統> ： 玩家<" + player0UserToken + ">獲勝");
+			chatMsg1.add("<系統> ： 玩家<" + player0UserToken + ">獲勝");
 		} else if (status.equals("outcome1")) {
 			status = "OK";
-			chatMsg.add("<系統> ： 玩家<" + player1UserToken + ">獲勝");
-			chatMsg.add("<系統> ： 玩家<" + player1UserToken + ">獲勝");
+			chatMsg0.add("<系統> ： 玩家<" + player1UserToken + ">獲勝");
+			chatMsg1.add("<系統> ： 玩家<" + player1UserToken + ">獲勝");
 		} else if (status.equals("exit0")) {
 			status = "OK";
-			chatMsg.add("<系統> ： " + player0UserToken + " 離開此局");
-			chatMsg.add("<系統> ： " + player0UserToken + " 離開此局");
-			chatMsg.add("<系統> ： 玩家<" + player1UserToken + ">獲勝");
-			chatMsg.add("<系統> ： 玩家<" + player1UserToken + ">獲勝");
+			chatMsg0.add("<系統> ： " + player0UserToken + " 離開此局");
+			chatMsg1.add("<系統> ： " + player0UserToken + " 離開此局");
+			chatMsg0.add("<系統> ： 玩家<" + player1UserToken + ">獲勝");
+			chatMsg1.add("<系統> ： 玩家<" + player1UserToken + ">獲勝");
 		} else if (status.equals("exit1")) {
 			status = "OK";
-			chatMsg.add("<系統> ： " + player1UserToken + " 離開此局");
-			chatMsg.add("<系統> ： " + player1UserToken + " 離開此局");
-			chatMsg.add("<系統> ： 玩家<" + player0UserToken + ">獲勝");
-			chatMsg.add("<系統> ： 玩家<" + player0UserToken + ">獲勝");
+			chatMsg0.add("<系統> ： " + player1UserToken + " 離開此局");
+			chatMsg1.add("<系統> ： " + player1UserToken + " 離開此局");
+			chatMsg0.add("<系統> ： 玩家<" + player0UserToken + ">獲勝");
+			chatMsg1.add("<系統> ： 玩家<" + player0UserToken + ">獲勝");
 		}
 	}
 	// API END

@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
+
 import server.jdbc.DataBase;
 import server.data.player.Player;
 
@@ -145,13 +146,13 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public String updateChat(int roomNum) throws RemoteException {
-		return roomlist.get(getRoomIndex(roomNum)).updateChat();
+	public String updateChat(int roomNum, String userToken) throws RemoteException {
+		return roomlist.get(getRoomIndex(roomNum)).updateChat(userToken);
 	}
 
 	@Override
-	public boolean hasNewMsg(int roomNum) throws RemoteException {
-		return roomlist.get(getRoomIndex(roomNum)).hasNewMsg();
+	public boolean hasNewMsg(int roomNum, String userToken) throws RemoteException {
+		return roomlist.get(getRoomIndex(roomNum)).hasNewMsg(userToken);
 	}
 
 	@Override
@@ -209,7 +210,7 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 					|| status.equals("disconnect1OK")) {
 				for (int i = 0; i < online.size(); i++) {
 					if (online.get(i).getUserToken().equals(player1)) {
-						room.chatMsg.add("<系統> ： 遊戲結束，中斷連線。");
+						room.chatMsg1.add("<系統> ： 遊戲結束，中斷連線。");
 						System.out.println(player1 + "leave");
 						online.remove(i);
 					}
@@ -218,19 +219,21 @@ public class RMIServerImpl extends UnicastRemoteObject implements
 					|| status.equals("disconnect1Again")) {
 				for (int i = 0; i < online.size(); i++) {
 					if (online.get(i).getUserToken().equals(player0)) {
-						room.chatMsg.add("<系統> ： 遊戲結束，中斷連線。");
+						room.chatMsg0.add("<系統> ： 遊戲結束，中斷連線。");
 						System.out.println(player0 + "leave");
 						online.remove(i);
 					}
 				}
 			} else if (status.equals("OK")) {
 				for (int i = 0; i < online.size(); i++) {
-					room.chatMsg.add("<系統> ： 遊戲結束，中斷連線。");
-					room.chatMsg.add("<系統> ： 遊戲結束，中斷連線。");
 					System.out.println(player0 + "leave");
 					System.out.println(player1 + "leave");
-					if (online.get(i).getUserToken().equals(player0)
-							|| online.get(i).getUserToken().equals(player1)) {
+					if (online.get(i).getUserToken().equals(player0)) {
+						room.chatMsg0.add("<系統> ： 遊戲結束，中斷連線。");
+						online.remove(i);
+					}
+					if (online.get(i).getUserToken().equals(player1)) {
+						room.chatMsg1.add("<系統> ： 遊戲結束，中斷連線。");
 						online.remove(i);
 					}
 				}

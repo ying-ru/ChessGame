@@ -119,8 +119,8 @@ public class ChatPanel extends JPanel implements Observer {
 						Thread.sleep(100);
 						// update chat start
 
-						if (server.s.hasNewMsg(server.getRoom())) {
-							appendChatArea(server.s.updateChat(server.getRoom()));
+						if (server.s.hasNewMsg(server.getRoom(), userToken)) {
+							appendChatArea(server.s.updateChat(server.getRoom(), userToken));
 						}
 						// update chat end
 					}

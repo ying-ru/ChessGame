@@ -49,6 +49,6 @@ public class PlayGame {
 		String userToken, secretToken;
 		userToken = args[0];
 		secretToken = args[1];
-		PlayGame pg = new PlayGame(userToken, secretToken);
+		PlayGame game = new PlayGame(userToken, secretToken);
 	}
 }

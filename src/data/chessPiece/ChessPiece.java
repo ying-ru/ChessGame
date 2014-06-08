@@ -4,7 +4,6 @@ import java.awt.Point;
 
 public class ChessPiece extends ChessPiecePicture {
 	private String chessName = "";
-	private int chessCoorX, chessCoorY;
 	private ChessPieceLocation chessBoardLoc;
 	private int beforeX, beforeY, afterX, afterY;
 	private int grid;
@@ -14,8 +13,6 @@ public class ChessPiece extends ChessPiecePicture {
 		this.grid = grid;
 		this.chessBoardLoc = chessBoardLoc;
 		this.chessName = chessName;
-		this.chessCoorX = chessCoorX;
-		this.chessCoorY = chessCoorY;
 		this.beforeX = chessCoorX;
 		this.beforeY = chessCoorY;
 	}
@@ -24,10 +21,6 @@ public class ChessPiece extends ChessPiecePicture {
 		setLocation(chessBoardLoc.getChessLocation(beforeX, beforeY));
 		setAfterX(beforeX);
 		setAfterY(beforeY);
-	}
-
-	public void setChessToXY(int chessCoorX, int chessCoorY) {
-		setLocation(chessBoardLoc.getChessLocation(chessCoorX, chessCoorY));
 	}
 
 	public String getChessName() {
@@ -40,14 +33,6 @@ public class ChessPiece extends ChessPiecePicture {
 
 	public int getFrameY() {
 		return getLocation().y;
-	}
-
-	public int getChessBoardX() {
-		return chessCoorX;
-	}
-
-	public int getChessBoardY() {
-		return chessCoorY;
 	}
 	
 	public int getGrid() {

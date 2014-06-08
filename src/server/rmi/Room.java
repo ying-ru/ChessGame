@@ -168,6 +168,7 @@ public class Room {
 			} else {
 				status = "outcome1";
 			}
+			System.out.println(userToken + " " + rivalToken);
 			int win = dataBase.selectWin(userToken);
 			int lose = dataBase.selectLose(userToken);
 			win++;
@@ -261,15 +262,15 @@ public class Room {
 	public void exit(String userToken) throws RemoteException {
 		String rivalToken;
 		boolean isPlayer0 = userToken.equals(player0UserToken);
-		if (userToken.equals(player0UserToken)) {
+		if (isPlayer0) {
 			rivalToken = player1UserToken;
 		} else {
 			rivalToken = player0UserToken;
 		}
-		if (userToken.equals(player0UserToken)) {
-			userToken = player1UserToken;
-		} else {
+		if (isPlayer0) {
 			userToken = player0UserToken;
+		} else {
+			userToken = player1UserToken;
 		}
 		if (!isEnd) {
 			isEnd = true;
@@ -279,13 +280,14 @@ public class Room {
 			} else {
 				status = "exit1";
 			}
+			System.out.println(userToken + " " + rivalToken);
 			int win = dataBase.selectWin(userToken);
 			int lose = dataBase.selectLose(userToken);
-			win++;
+			lose++;
 			dataBase.update(userToken, win, lose);
 			win = dataBase.selectWin(rivalToken);
 			lose = dataBase.selectLose(rivalToken);
-			lose++;
+			win++;
 			dataBase.update(rivalToken, win, lose);
 		}
 	}

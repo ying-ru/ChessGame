@@ -1,6 +1,6 @@
 ChessGame
 =========
-FCU - SQA
+FCU - SQA Project
 
 License
 ========
